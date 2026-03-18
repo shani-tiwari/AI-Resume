@@ -1,4 +1,5 @@
 const {Router} = require("express");
+const { registerUser, loginUser } = require("../controllers/auth.controller");
 const authRouter = Router();
 
 
@@ -7,7 +8,7 @@ const authRouter = Router();
  * @route POST /api/auth/register
  * @access Public   
  */
-authRouter.post("/register"); 
+authRouter.post("/register", registerUser);
 
 
 /**
@@ -15,7 +16,7 @@ authRouter.post("/register");
  * @route POST /api/auth/login
  * @access Public
  */
-authRouter.post("/login");
+authRouter.post("/login", loginUser);
 
 
 
