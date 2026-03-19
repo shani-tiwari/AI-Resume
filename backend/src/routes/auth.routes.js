@@ -1,5 +1,5 @@
 const {Router} = require("express");
-const { registerUser, loginUser } = require("../controllers/auth.controller");
+const { registerUser, loginUser, logoutUser } = require("../controllers/auth.controller");
 const authRouter = Router();
 
 
@@ -17,6 +17,14 @@ authRouter.post("/register", registerUser);
  * @access Public
  */
 authRouter.post("/login", loginUser);
+
+
+/**
+ * @description Logout a user
+ * @route POST /api/auth/logout
+ * @access Public
+ */
+authRouter.get("/logout", logoutUser); 
 
 
 

@@ -1,4 +1,5 @@
 const userModel = require("../models/user.model");
+const BlackListModel = require("../models/blacklist.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
@@ -19,7 +20,7 @@ async function registerUser(req, res){
             return res.status(400).json({message: "All fields are required"});
         }
 
-        const ifExist = await userModel.findOne( {$or: [{email}, {username}]} );
+        const ifExist = await userModel.findOne( {$or: [{email}, {name}]} );
         if(ifExist) return res.status(400).json({message: "User already exists with this email"});
 
         const hashPassword = await bcrypt.hash(password, 10);
@@ -34,7 +35,7 @@ async function registerUser(req, res){
             newUser:{
                 _id: newUser._id,
                 name: newUser.name,
-                username: newUser.username
+                email: newUser.email
             }
         });
 
@@ -65,15 +66,15 @@ async function loginUser(req, res){
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if(!isPasswordValid) return res.status(400).json({message: "Invalid password"});
-
-        const token = jwt.sign({id: user._id, username: user.username}, process.env.JWT_SECRET, {expiresIn: "1d"});
+        
+        const token = jwt.sign({id: user._id, name: user.name}, process.env.JWT_SECRET, {expiresIn: "1d"});
 
         res.cookie("token", token);
 
         return res.status(200).json({message: "User logged in successfully", user:{
             _id: user._id,
             email: user.email,
-            username: user.username,
+            name: user.name,
         }});
 
     } catch (error) {
@@ -82,4 +83,33 @@ async function loginUser(req, res){
     };
 };
 
-module.exports = {registerUser, loginUser};
+
+/**
+ * @name logoutUser - controller for user logout
+ * @description Logout a User - clear cookie, add token to black list
+ * @route POST /api/auth/logout
+ * @access Public
+ */
+async function logoutUser(req, res){
+    try {
+        const token = req.cookies.token;
+        if(!token) return res.status(400).json({message: "No token found"});
+
+        // pre-check
+        const isTokenBlacklisted = await BlackListModel.findOne({token});
+        if(isTokenBlacklisted) return res.status(400).json({message: "Token already blacklisted"});
+
+        // add token to black list
+        const blacklistedToken = await BlackListModel.create({token});
+        
+        // clear cookie
+        res.clearCookie("token");
+
+        return res.status(200).json({message: "User logged out successfully", blacklistedToken});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: "Internal server error"});
+    };
+};
+
+module.exports = {registerUser, loginUser, logoutUser};
