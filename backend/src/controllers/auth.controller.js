@@ -66,7 +66,7 @@ async function loginUser(req, res){
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if(!isPasswordValid) return res.status(400).json({message: "Invalid password"});
-        
+
         const token = jwt.sign({id: user._id, name: user.name}, process.env.JWT_SECRET, {expiresIn: "1d"});
 
         res.cookie("token", token);
@@ -112,4 +112,32 @@ async function logoutUser(req, res){
     };
 };
 
-module.exports = {registerUser, loginUser, logoutUser};
+
+/**
+ * @name getMe - controller for getting current user details
+ * @description Get current logged in user details
+ * @route GET /api/auth/get-me
+ * @access Private
+ */
+async function getMe(req, res){
+    try {
+        // /doesn't need coz middleware were used
+        // const token = req.cookies.token;
+        // if(!token) return res.status(400).json({message: "No token found"});
+
+        // const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        // const user = await userModel.findById(decodedToken.id);
+        // if(!user) return res.status(400).json({message: "User not found"});
+
+        // return res.status(200).json({message: "User details fetched successfully", user});
+
+        const user = await userModel.findById(req.user.id);
+        return res.status(200).json({message: "User details fetched successfully", user});  
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: "Internal server error"});
+    };
+};
+
+module.exports = {registerUser, loginUser, logoutUser, getMe};
