@@ -24,15 +24,15 @@ async function registerUser(req, res){
         if(ifExist) return res.status(400).json({message: "User already exists with this email"});
 
         const hashPassword = await bcrypt.hash(password, 10);
-        const newUser = await userModel.create({name, email, password: hashPassword});
+        const user = await userModel.create({name, email, password: hashPassword});
 
-        const token = jwt.sign({id: newUser._id, name: newUser.name}, process.env.JWT_SECRET, {expiresIn: "1d"});   
+        const token = jwt.sign({id: user._id, name: user.name}, process.env.JWT_SECRET, {expiresIn: "1d"});   
 
         res.cookie("token", token);
 
         return res.status(201).json({
             message: "User registered successfully", 
-            newUser:{
+            user:{
                 _id: newUser._id,
                 name: newUser.name,
                 email: newUser.email
