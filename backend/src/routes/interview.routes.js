@@ -2,6 +2,7 @@ const express = require("express");
 const interviewRouter = express.Router();
 const authUser = require("../middlewares/auth.middleware");
 const {generateInterviewReport} = require("../controllers/interview.controller");
+const upload = require("../middleware/file.middleware");
 
 /**
  * @description route to generate new interview report basis of job description and resume
@@ -11,7 +12,7 @@ const {generateInterviewReport} = require("../controllers/interview.controller")
  * @returns {pdfBuffer: Buffer}
  * @access private
  */
-interviewRouter.post("/", authUser, generateInterviewReport);  
+interviewRouter.post("/", authUser, upload.single("resume"), generateInterviewReport);  
 
 
 module.exports = interviewRouter;
