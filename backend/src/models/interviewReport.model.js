@@ -108,7 +108,7 @@ const interviewReportSchema = new mongoose.Schema({
     behavioralQuestions: [ behavioralQuestionSchema ],
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "users"
+        ref: "users" // reference
     },
     title: {
         type: String,
