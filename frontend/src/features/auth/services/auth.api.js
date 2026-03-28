@@ -20,6 +20,7 @@ export const registerUser = async ({name, email, password}) => {
         return response.data;
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
 
@@ -34,6 +35,7 @@ export const loginUser = async ({email, password}) => {
         return response.data;
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
 
@@ -47,6 +49,7 @@ export const logoutUser = async () => {
         return response.data;
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
 
@@ -60,5 +63,6 @@ export const getUser = async () => {
         return response.data;
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
