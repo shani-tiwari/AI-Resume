@@ -33,9 +33,9 @@ async function registerUser(req, res){
         return res.status(201).json({
             message: "User registered successfully", 
             user:{
-                _id: newUser._id,
-                name: newUser.name,
-                email: newUser.email
+                _id: user._id,
+                name: user.name,
+                email: user.email
             }
         });
 

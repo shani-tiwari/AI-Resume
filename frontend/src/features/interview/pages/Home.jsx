@@ -6,26 +6,31 @@ import "../style/home.scss"
 
 const Home = () => {
 
-    const { loading, generateReport,reports } = useInterview()
-    const [ jobDescription, setJobDescription ] = useState("")
-    const [ selfDescription, setSelfDescription ] = useState("")
-    const resumeInputRef = useRef()
+    // destructure the state from context
+    const { loading, generateReport,reports } = useInterview();
 
-    const navigate = useNavigate()
+    // local state
+    const [ jobDescription, setJobDescription ] = useState("");
+    const [ selfDescription, setSelfDescription ] = useState(""); 
+    const resumeInputRef = useRef();
 
+    const navigate = useNavigate();
+
+    // handle generate report
     const handleGenerateReport = async () => {
-        const resumeFile = resumeInputRef.current.files[ 0 ]
-        const data = await generateReport({ jobDescription, selfDescription, resumeFile })
-        navigate(`/interview/${data._id}`)
-    }
+        const resumeFile = resumeInputRef.current.files[ 0 ];
+        const data = await generateReport({ jobDescription, selfDescription, resumeFile });
+        navigate(`/interview/${data._id}`);
+    };
 
+    // loading screen
     if (loading) {
         return (
             <main className='loading-screen'>
                 <h1>Loading your interview plan...</h1>
             </main>
         )
-    }
+    };
 
     return (
         <div className='home-page'>

@@ -58,15 +58,21 @@ const RoadMapDay = ({ day }) => (
 
 // ── Main Component ────────────────────────────────────────────────────────────
 const Interview = () => {
-    const [ activeNav, setActiveNav ] = useState('technical')
-    const { report, getReportById, loading, getResumePdf } = useInterview()
-    const { interviewId } = useParams()
+    // local state
+    const [ activeNav, setActiveNav ] = useState('technical');
 
+    // destructure the state from context
+    const { report, getReportById, loading, getResumePdf } = useInterview();
+
+    // get interviewId from params
+    const { interviewId } = useParams();
+
+    // use effect to get interview report by interviewId
     useEffect(() => {
         if (interviewId) {
             getReportById(interviewId)
         }
-    }, [ interviewId, getReportById ])
+    }, [ interviewId, getReportById ]);
 
 
 
@@ -76,11 +82,9 @@ const Interview = () => {
                 <h1>Loading your interview plan...</h1>
             </main>
         )
-    }
+    };
 
-    const scoreColor =
-        report.matchScore >= 80 ? 'score--high' :
-            report.matchScore >= 60 ? 'score--mid' : 'score--low'
+    const scoreColor = report.matchScore >= 80 ? 'score--high' : report.matchScore >= 60 ? 'score--mid' : 'score--low';
 
 
     return (
