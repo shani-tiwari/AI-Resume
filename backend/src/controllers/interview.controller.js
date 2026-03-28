@@ -96,7 +96,19 @@ const generateResumePdf = async (req, res) => {
     try {
         const { interviewReportId } = req.params;
         const interviewReport = await interviewReportModel.findById(interviewReportId);
-        return res.status(200).json({ interviewReport });
+        if(!interviewReport) {
+            return res.status(404).json({message: "Interview report not found..."});
+        };
+        const pdfBuffer = await generateResumePdf({
+            resume: interviewReport.resume,
+            selfDescription: interviewReport.selfDescription,
+            jobDescription: interviewReport.jobDescription
+        });
+        res.set({
+            "Content-Type": "application/pdf",
+            "Content-Disposition": `attachment; filename=resume_${interviewReportId}.pdf`
+        });
+        return res.status(200).send(pdfBuffer);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal server error..." });
